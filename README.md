@@ -1,7 +1,7 @@
-#Term Project
+##Term Project
 The team plan to complete the project by 25th March 2024
 
-## The problems to solve: 
+### The problems to solve: 
 1. **Calculate Yearly Averages (1760-2015):**
    - Based on the land average temperature column, calculate the yearly averages for each year between 1760 and 2015 (the average of the twelve months of each year). One average per year. Ignore the years 1750-1759.
 
@@ -35,15 +35,15 @@ The team plan to complete the project by 25th March 2024
 11. **Generate GNUPlot Graph for Land and Ocean Temperatures (1850-2015):**
    - Generate a GNUPlot data file and plot a graph similar to question 6 but for the years 1850 to 2015, including data for LandAndOceanAverageTemperatures column. Plot both lines on the same figure, with clear labels, a title, and a legend.
 
-## Work Distribution
+### Work Distribution
 This is the work distribution decided on the consensus of the entire team and it is advised that the team members follow this strictly
 
 **Report**
-For report everyone will do the questions that are given to them. 
+For report everyone will do the questions that are given to them for the report as well.  
 
 ### Jashan Pratap Singh
 **Questions 1 to 3**
-Jashan is the team lead and will complete questions from 1 to 3 that are listed above
+Jashan is the team lead and will complete questions from 1 to 3 that are listed above. it.m4.at.ig will do the conclusion as he only has 2 questions. 
 
 
 ### Musa

@@ -68,40 +68,51 @@ int main() {
             fclose(file);
 
     //Question 3: Average temperature of each month for all the months combined between 1990 2015
-                double monthly_averages[NUM_MONTHS] = {0};
-                int monthly_counts[NUM_MONTHS] = {0};
+            // Open the file for reading
+            file = fopen("GlobalTemperatures.csv", "r");
+            if (file == NULL) {
+                printf("Error opening file.\n");
+                return 1;
+            }
 
-                file = fopen("GlobalTemperatures.csv", "r");
-                if (file == NULL) {
-                    printf("Error opening file.\n");
-                    return 1;
+            // Arrays to store monthly averages and counts
+            double monthly_averages[NUM_MONTHS] = {0};
+            int monthly_counts[NUM_MONTHS] = {0};
+            int start_year = 1990;
+            int end_year = 2015;
+
+            // Skip the header line
+            fscanf(file, "%*[^\n]");
+            fgetc(file);
+
+            // Variables to store data from each line
+            char dt[20];
+
+            // Read data and calculate monthly averages
+            while (fscanf(file, "%19[^,],%lf%*[^\n]", dt, &temperature) == 2) {
+                // Extract year and month from date
+                int year, month;
+                sscanf(dt, "%d-%d", &year, &month);
+                if (year >= start_year && year <= end_year) {
+                    int index = month - 1;
+                    monthly_averages[index] += temperature;
+                    monthly_counts[index]++;
                 }
+            }
 
-                fgets(line, sizeof(line), file);
-                char month[3];
+            // Close the file
+            fclose(file);
 
-                while (fscanf(file, "%d-%2[^-]-%*d,%2lf", &year, month, &temperature) == 3) {
-                    if (year >= 1900 && year <= 2015) {
-                        int index;
-                        if (year == 1900)
-                            index = atoi(month) - 1;
-                        else
-                            index = (year - 1900) * 12 + atoi(month) - 1;
-                        monthly_averages[index] += temperature;
-                        monthly_counts[index]++;
-                    }
+            // Output monthly averages
+            printf("Month\tAverage Temperature\n");
+            for (int i = 0; i < NUM_MONTHS; i++) {
+                if (monthly_counts[i] > 0) {
+                    double avg_temp = monthly_averages[i] / monthly_counts[i];
+                    printf("%d\t%.2f\n", i + 1, avg_temp);
+                } else {
+                    printf("%d\tNo data\n", i + 1);
                 }
-
-                fclose(file);
-
-                // Calculating the montly temperatures
-                printf("Month\tAverage Temperature\n");
-                for (int i = 0; i < NUM_MONTHS; i++) {
-                    if (monthly_counts[i] > 0) {
-                        double avg_temp = monthly_averages[i] / monthly_counts[i];
-                        printf("%d\t%.2f\n", i + 1, avg_temp);
-                    }
-                }
+            }
 
 
     return 0;

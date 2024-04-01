@@ -1,0 +1,168 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h> // For INT_MIN and INT_MAX
+
+#define NUM_YEARS 256
+#define NUM_MONTHS 12
+
+int main() {
+    // Your existing code for Questions 1, 2, and 3 goes here.
+// Question 1: Reading and calculating yearly averages
+                FILE *file = fopen("GlobalTemperatures.csv", "r");
+                if (file == NULL) {
+                    printf("Error opening file.\n");
+                    return 1;
+                }
+
+                double yearly_averages[NUM_YEARS] = {0};
+                int yearly_counts[NUM_YEARS] = {0};
+                fscanf(file, "%*[^\n]");
+                fgetc(file);
+
+                int year;
+                double temperature;
+                char line[100];
+                while (fgets(line, sizeof(line), file) != NULL) {
+                    sscanf(line, "%*[^,],%lf", &temperature);
+                    sscanf(line, "%d", &year);
+                    if (year >= 1760 && year <= 2015) {
+                        int index = year - 1760;
+                        yearly_averages[index] += temperature;
+                        yearly_counts[index]++;
+                    }
+                }
+
+                fclose(file);
+
+                // Output yearly averages
+                printf("Year\tAverage Temperature\n");
+                for (int i = 0; i < NUM_YEARS; i++) {
+                    if (yearly_counts[i] > 0) {
+                        double avg_temp = yearly_averages[i] / yearly_counts[i];
+                        printf("%d\t%.2f\n", i + 1760, avg_temp);
+                    }
+                }
+
+    // Question 2: Calculating average land temperature
+            file = fopen("GlobalTemperatures.csv", "r");
+            if (file == NULL) {
+                printf("Error opening file.\n");
+                return 1;
+            }
+            double total_temperature = 0;
+            int count = 0;
+            fgets(line, sizeof(line), file);
+            while (fgets(line, sizeof(line), file)) {
+                sscanf(line, "%*[^,],%lf", &temperature);
+                total_temperature += temperature;
+                count++;
+            }
+
+            // Calculate and print the average temperature
+            if (count > 0) {
+                double average_temperature = total_temperature / count;
+                printf("Average Land Temperature: %.2f\n", average_temperature);
+            } else {
+                printf("No data found.\n");
+            }
+
+            fclose(file);
+
+    //Question 3: Average temperature of each month for all the months combined between 1990 2015
+                double monthly_averages[NUM_MONTHS] = {0};
+                int monthly_counts[NUM_MONTHS] = {0};
+
+                file = fopen("GlobalTemperatures.csv", "r");
+                if (file == NULL) {
+                    printf("Error opening file.\n");
+                    return 1;
+                }
+
+                fgets(line, sizeof(line), file);
+                char month[3];
+
+                while (fscanf(file, "%d-%2[^-]-%*d,%2lf", &year, month, &temperature) == 3) {
+                    if (year >= 1900 && year <= 2015) {
+                        int index;
+                        if (year == 1900)
+                            index = atoi(month) - 1;
+                        else
+                            index = (year - 1900) * 12 + atoi(month) - 1;
+                        monthly_averages[index] += temperature;
+                        monthly_counts[index]++;
+                    }
+                }
+
+                fclose(file);
+
+                // Calculating the montly temperatures
+                printf("Month\tAverage Temperature\n");
+                for (int i = 0; i < NUM_MONTHS; i++) {
+                    if (monthly_counts[i] > 0) {
+                        double avg_temp = monthly_averages[i] / monthly_counts[i];
+                        printf("%d\t%.2f\n", i + 1, avg_temp);
+                    }
+                }
+
+//Question 4: Finding the hottest and coldest month recorded
+
+double hottest_month_temp = (double) INT_MIN, coldest_month_temp = (double) INT_MAX;
+char hottest_month_date[10] = "", coldest_month_date[10] = "";
+char temp_date[10];
+double month_temperature;
+
+file = fopen("GlobalTemperatures.csv", "r");
+if (file == NULL) {
+    printf("Error opening file.\n");
+    return 1;
+}
+
+fgets(line, sizeof(line), file); // Skip header
+while (fgets(line, sizeof(line), file) != NULL) {
+    sscanf(line, "%[^,],%lf", temp_date, &month_temperature);
+    if (month_temperature > hottest_month_temp) {
+        hottest_month_temp = month_temperature;
+        strcpy(hottest_month_date, temp_date);
+    }
+    if (month_temperature < coldest_month_temp && month_temperature != 0) { // Assuming '0' is not a valid temperature
+        coldest_month_temp = month_temperature;
+        strcpy(coldest_month_date, temp_date);
+    }
+}
+
+fclose(file);
+
+// Print the results for Question 4
+printf("Hottest month recorded: %s with temperature %.2f\n", hottest_month_date, hottest_month_temp);
+printf("Coldest month recorded: %s with temperature %.2f\n", coldest_month_date, coldest_month_temp);
+
+// Continue with Question 5...
+
+    //Question 5
+            
+    // Initialize variables to track the hottest and coldest years and temperatures
+    double hottest_temp = (double) INT_MIN;
+    double coldest_temp = (double) INT_MAX;
+    int hottest_year = 0, coldest_year = 0;
+
+    // Iterate through yearly_averages to find the hottest and coldest years
+    for (int i = 0; i < NUM_YEARS; i++) {
+        if (yearly_counts[i] > 0) { // Ensure there's data for the year
+            double avg_temp = yearly_averages[i] / yearly_counts[i];
+            if (avg_temp > hottest_temp) {
+                hottest_temp = avg_temp;
+                hottest_year = i + 1760; // Convert index back to year
+            }
+            if (avg_temp < coldest_temp) {
+                coldest_temp = avg_temp;
+                coldest_year = i + 1760; // Convert index back to year
+            }
+        }
+    }
+
+    // Print the hottest and coldest years with their average temperatures
+    printf("Hottest Year: %d with an average temperature of %.2f\n", hottest_year, hottest_temp);
+    printf("Coldest Year: %d with an average temperature of %.2f\n", coldest_year, coldest_temp);
+
+    return 0;
+}

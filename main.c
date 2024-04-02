@@ -1,119 +1,132 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
-#define NUM_YEARS 256
-#define NUM_MONTHS 12
+#define MAX_LINE_LENGTH 1024
+
 
 int main() {
 
-    // Question 1: Reading and calculating yearly averages
-                FILE *file = fopen("GlobalTemperatures.csv", "r");
-                if (file == NULL) {
-                    printf("Error opening file.\n");
-                    return 1;
-                }
+    //Common Parts of the Program
+    char line[MAX_LINE_LENGTH];
+    FILE *file, *q6, *q7, *q8, *q9, *q11;
+    int count=0, i=0,n;
+    char *token, *year, *temp;
+    double yearlyavg=0, allyearlyavg[256], dtemp, centavg[MAX_LINE_LENGTH], cent;
+    file = fopen("GlobalTemperatures.csv", "r");
+    if (!file) {
+        printf("There was a error opening this file.\n");
+        return 1;
+    }
 
-                double yearly_averages[NUM_YEARS] = {0};
-                int yearly_counts[NUM_YEARS] = {0};
-                fscanf(file, "%*[^\n]");
-                fgetc(file);
+    printf("This is where the term project starts!\n");
 
-                int year;
-                double temperature;
-                char line[100];
-                while (fgets(line, sizeof(line), file) != NULL) {
-                    sscanf(line, "%*[^,],%lf", &temperature);
-                    sscanf(line, "%d", &year);
-                    if (year >= 1760 && year <= 2015) {
-                        int index = year - 1760;
-                        yearly_averages[index] += temperature;
-                        yearly_counts[index]++;
-                    }
-                }
+    // Question 1: Reading and calculating yearly average
+    printf("Solution 1\n\n");
+    // Here the goal is to find the average land temperature of each year between 1760-2015
 
-                fclose(file);
 
-                // Output yearly averages
-                printf("Year\tAverage Temperature\n");
-                for (int i = 0; i < NUM_YEARS; i++) {
-                    if (yearly_counts[i] > 0) {
-                        double avg_temp = yearly_averages[i] / yearly_counts[i];
-                        printf("%d\t%.2f\n", i + 1760, avg_temp);
-                    }
-                }
+    do {
+        //skipping the header line here
+        fgets(line, MAX_LINE_LENGTH, file);
+
+        //Splitting the line at the delimiter which is a comma
+        token = strtok(line, ",");
+        temp = strtok(NULL, ",");
+        year = strtok(token,"-");
+
+        if (atoi(year) >= 1760){
+            if (temp != NULL){
+                dtemp=atof(temp);
+                printf("%lf", dtemp);
+                yearlyavg += dtemp;
+                count += 1;
+            }
+        }
+
+        if (count == 12){
+            yearlyavg = yearlyavg/12;
+            allyearlyavg[i]=yearlyavg;
+            i++;
+            count=0;
+            yearlyavg=0;
+            
+        }
+
+
+    }while(!(feof(file)));
+
+    fclose(file);
+
+    printf(" The yearly average here is(C*)\n   ----    -----------\n");
+    for (i=0;i <= 255;i++)
+    printf("   %d  %lf\n", i+1760, allyearlyavg[i]);
+
 
     // Question 2: Calculating average land temperature
-            file = fopen("GlobalTemperatures.csv", "r");
-            if (file == NULL) {
-                printf("Error opening file.\n");
-                return 1;
-            }
-            double total_temperature = 0;
-            int count = 0;
-            fgets(line, sizeof(line), file);
-            while (fgets(line, sizeof(line), file)) {
-                sscanf(line, "%*[^,],%lf", &temperature);
-                total_temperature += temperature;
-                count++;
-            }
+    printf("\nQuestion 2\n\n");
 
-            // Calculate and print the average temperature
-            if (count > 0) {
-                double average_temperature = total_temperature / count;
-                printf("Average Land Temperature: %.2f\n", average_temperature);
-            } else {
-                printf("No data found.\n");
-            }
+    // Here we had already created a yearly average array in the beginning which enabled us
+    // to take the years out
+    //Now we will use tghat array here and loop through it
+    count = 0;
+    n=0;
+    // Here we will display the heading
+    printf("The Century       The Average temperature of the Ceentury\n");
 
-            fclose(file);
+    for (i = 1760; i <= 1760+256; i++){
+        if (i%100 ==0 || i ==2016){
+            cent /= count;
+            centavg[n] = cent;
+
+            printf("%d-%d     %lf \n", i-count,i-1,centavg[n]);
+            n++;
+
+            count=0;
+            cent=0;
+        }
+
+        cent += allyearlyavg[i-1760];
+        count++;
+    }
 
     //Question 3: Average temperature of each month for all the months combined between 1990 2015
-            // Open the file for reading
-            file = fopen("GlobalTemperatures.csv", "r");
-            if (file == NULL) {
-                printf("Error opening file.\n");
-                return 1;
-            }
 
-            // Arrays to store monthly averages and counts
-            double monthly_averages[NUM_MONTHS] = {0};
-            int monthly_counts[NUM_MONTHS] = {0};
-            int start_year = 1990;
-            int end_year = 2015;
+    printf(" Question 3\n");
+    double temp_new[12];
+    char mon[][MAX_LINE_LENGTH] = {{"1st Month"}, {"2nd Month"}, {"3th Month"}, {"4th Month"}, {"5th Month"}, {"6th Month"},{"7th Month"},{"8th Month"},{"9th Month"},{"10th Month"},{"11th Month"},{"12th Month"}};
 
-            // Skip the header line
-            fscanf(file, "%*[^\n]");
-            fgetc(file);
+    count = 0 ;
+    file = fopen("GlobalTemperatures.csv", "r");
+    do {
+    fgets(line, MAX_LINE_LENGTH, file);
 
-            // Variables to store data from each line
-            char dt[20];
+    token = strtok(line,",");
+    temp = strtok(NULL, ",");
+    year = strtok(token,"-");
 
-            // Read data and calculate monthly averages
-            while (fscanf(file, "%19[^,],%lf%*[^\n]", dt, &temperature) == 2) {
-                // Extract year and month from date
-                int year, month;
-                sscanf(dt, "%d-%d", &year, &month);
-                if (year >= start_year && year <= end_year) {
-                    int index = month - 1;
-                    monthly_averages[index] += temperature;
-                    monthly_counts[index]++;
-                }
-            }
+    if (atoi(year) >= 1900) {
+        if(temp != NULL) {
+            temp_new[count] = temp_new[count] + atof(temp);
+            count++;
+        }
+    }
+    if (count == 12) {
+        count = 0;
+    }
+}while (!(feof(file)));
 
-            // Close the file
-            fclose(file);
+    fclose(file);
 
-            // Output monthly averages
-            printf("Month\tAverage Temperature\n");
-            for (int i = 0; i < NUM_MONTHS; i++) {
-                if (monthly_counts[i] > 0) {
-                    double avg_temp = monthly_averages[i] / monthly_counts[i];
-                    printf("%d\t%.2f\n", i + 1, avg_temp);
-                } else {
-                    printf("%d\tNo data\n", i + 1);
-                }
-            }
+    for (i=0 ; i < 12 ; i++) {
+        temp_new[i] /= 116;
+    }
 
+    printf("The Month       Avg Temp\n------    -------\n");
+    for (i = 0 ; i < 12 ; i++) {
+        printf("%-9s % 6.3lf \n", &mon[i][0], temp_new[i]);
+    }
 
     return 0;
 }

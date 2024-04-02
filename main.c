@@ -173,5 +173,33 @@ int main() {
     printf("Hottest month recorded: %s\n", HottestMonth);
     printf("Coldest month recorded: %s\n", ColdestMonth);
 
+    //Question 5
+
+    printf("\n\n Question 5 \n");
+            
+    // Initialize variables to track the hottest and coldest years and temperatures
+    double hottest_temp = (double) INT_MIN;
+    double coldest_temp = (double) INT_MAX;
+    int hottest_year = 0, coldest_year = 0;
+
+    // Iterate through yearly_averages to find the hottest and coldest years
+    for (int i = 0; i < NUM_YEARS; i++) {
+        if (yearly_counts[i] > 0) { // Ensure there's data for the year
+            double avg_temp = yearly_averages[i] / yearly_counts[i];
+            if (avg_temp > hottest_temp) {
+                hottest_temp = avg_temp;
+                hottest_year = i + 1760; // Convert index back to year
+            }
+            if (avg_temp < coldest_temp) {
+                coldest_temp = avg_temp;
+                coldest_year = i + 1760; // Convert index back to year
+            }
+        }
+    }
+
+    // Print the hottest and coldest years with their average temperatures
+    printf("Hottest Year: %d with an average temperature of %.2f\n", hottest_year, hottest_temp);
+    printf("Coldest Year: %d with an average temperature of %.2f\n", coldest_year, coldest_temp);
+
     return 0;
 }

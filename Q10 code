@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LINE_LENGTH 1024
+
+struct TemperatureData {
+    int year;
+    int month;
+    double avgTemperature;
+    double uncertainty;
+};
+
+int main() {
+    FILE *file = fopen("GlobalTemperatures.csv", "r");
+    if (!file) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    struct TemperatureData data;
+    char line[MAX_LINE_LENGTH];
+
+    // Skip header line
+    fgets(line, MAX_LINE_LENGTH, file);
+
+    // Write extracted data to a file
+    FILE *outputFile = fopen("datas.txt", "w");
+    if (!outputFile) {
+        perror("Error opening output file");
+        return 1;
+    }
+
+    while (fgets(line, MAX_LINE_LENGTH, file) != NULL) {
+        char *token = strtok(line, ",");
+        int year = atoi(token);
+
+        if (year >= 2000 && year <= 2015) {
+            data.year = year;
+
+            token = strtok(NULL, ",");
+            data.month = atoi(token);
+
+            token = strtok(NULL, ",");
+            data.avgTemperature = atof(token);
+
+            token = strtok(NULL, ",");
+            data.uncertainty = atof(token);
+
+            fprintf(outputFile, "%d-%02d, %.2f\n", data.year, data.month, data.uncertainty);
+        }
+    }
+
+    fclose(file);
+    fclose(outputFile);
+
+    return 0;
+}

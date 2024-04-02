@@ -103,7 +103,7 @@ int main() {
     fgets(line, MAX_LINE_LENGTH, file);
 
     token = strtok(line,",");
-    temp = strtok(NULL, ",");
+    temp_new = strtok(NULL, ",");
     year = strtok(token,"-");
 
     if (atoi(year) >= 1900) {

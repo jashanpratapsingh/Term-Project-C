@@ -4,6 +4,7 @@
 #include <math.h>
 
 #define MAX_LINE_LENGTH 1024
+#define DELIMITER ","
 
 
 int main() {
@@ -103,7 +104,7 @@ int main() {
     fgets(line, MAX_LINE_LENGTH, file);
 
     token = strtok(line,",");
-    temp_new = strtok(NULL, ",");
+    temp = strtok(NULL, ",");
     year = strtok(token,"-");
 
     if (atoi(year) >= 1900) {
@@ -127,6 +128,50 @@ int main() {
     for (i = 0 ; i < 12 ; i++) {
         printf("%-9s % 6.3lf \n", &mon[i][0], temp_new[i]);
     }
+
+    // This is the start of the Question 4
+
+    printf("\n\nQuestion 4\n");
+
+    float HighestTemperature = -100.0; // Initializing to very low temperature
+    float LowestTemperature = 100.0;   // Initializing to very high temperature
+    char HottestMonth[20];
+    char ColdestMonth[20];
+
+    // Open the CSV file
+    file = fopen("GlobalTemperatures.csv", "r");
+    if (file == NULL) {
+        printf("Error: Unable to open file.\n");
+        return 1;
+    }
+    
+    // Read and parse data
+    while (fgets(line, sizeof(line), file)) {
+        // Tokenize the line using strtok()
+        char *token = strtok(line, DELIMITER);
+        char *year = token; // First token is the year
+        token = strtok(NULL, DELIMITER); // Move to the next token
+        
+        // Parse land average temperature
+        float temp = atof(token); // Convert string to float
+        
+        // Update hottest and coldest temperatures
+        if (temp > HighestTemperature) {
+            HighestTemperature = temp;
+            strcpy(HottestMonth, year);
+        }
+        if (temp < LowestTemperature) {
+            LowestTemperature = temp;
+            strcpy(ColdestMonth, year);
+        }
+    }
+    
+    // Close the file
+    fclose(file);
+    
+    // Print results
+    printf("Hottest month recorded: %s\n", HottestMonth);
+    printf("Coldest month recorded: %s\n", ColdestMonth);
 
     return 0;
 }

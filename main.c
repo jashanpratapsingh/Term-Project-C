@@ -42,7 +42,8 @@ int main() {
                     }
                 }
 
-    // Question 2: Calculating average land temperature
+    // Question 2: Calculating average land temperature of 19th, 20th, 21st Century
+    //One Average per Century.
             file = fopen("GlobalTemperatures.csv", "r");
             if (file == NULL) {
                 printf("Error opening file.\n");
@@ -51,21 +52,33 @@ int main() {
             double total_temperature = 0;
             int count = 0;
             fgets(line, sizeof(line), file);
-            while (fgets(line, sizeof(line), file)) {
-                sscanf(line, "%*[^,],%lf", &temperature);
-                total_temperature += temperature;
-                count++;
-            }
+            while(fgets(line, sizeof(line), in)!= NULL){
+		        sscanf(line, "%*[^,],%lf", &temperature);
+                sscanf(line, "%d", &year);
+		        if (year >= 1801 && year <= 1900) { // 19th century
+                    int index = year - 1801;
+                    yearly_averages_19th_century[index] += temperature;
+                    yearly_counts_19th_century[index]++;
+        } else if (year >= 1901 && year <= 2000) { // 20th century
+            int index = year - 1901;
+            yearly_averages_20th_century[index] += temperature;
+            yearly_counts_20th_century[index]++;
+        } else if (year >= 
+    }
 
-            // Calculate and print the average temperature
-            if (count > 0) {
-                double average_temperature = total_temperature / count;
-                printf("Average Land Temperature: %.2f\n", average_temperature);
-            } else {
-                printf("No data found.\n");
-            }
+    fprintf(output_file, "Year\tAverage Temperature (19th century)\tAverage Temperature (20th century)\n");
+    for (int i = 0; i < NUM_YEARS_PER_CENTURY; i++) {
+        if (yearly_counts_19th_century[i] > 0 && yearly_counts_20th_century[i] > 0) {
+            double avg_temp_19th_century = yearly_averages_19th_century[i] / yearly_counts_19th_century[i];
+            double avg_temp_20th_century = yearly_averages_20th_century[i] / yearly_counts_20th_century[i];
+            fprintf(output_file, "%d\t%.2f\t%.2f\n", i + 1801, avg_temp_19th_century, avg_temp_20th_century);
+        }
+    }
 
-            fclose(file);
+    fclose(input_file);
+    fclose(output_file);
+
+    fclose(file);
 
     //Question 3: Average temperature of each month for all the months combined between 1990 2015
                 double monthly_averages[NUM_MONTHS] = {0};
@@ -92,16 +105,7 @@ int main() {
                     }
                 }
 
-                fclose(file);
-
-                // Calculating the montly temperatures
-                printf("Month\tAverage Temperature\n");
-                for (int i = 0; i < NUM_MONTHS; i++) {
-                    if (monthly_counts[i] > 0) {
-                        double avg_temp = monthly_averages[i] / monthly_counts[i];
-                        printf("%d\t%.2f\n", i + 1, avg_temp);
-                    }
-                }
+                
 
 
     return 0;

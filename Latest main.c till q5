@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h> // For INT_MIN and INT_MAX
 
 #define NUM_YEARS 256
 #define NUM_MONTHS 12
+
+#define MAX_LINE_LENGTH 1000
+#define NUM_YEARS_PER_CENTURY 100
 
 int main() {
 
@@ -151,6 +155,38 @@ printf("Coldest month recorded: %s with temperature %.2f\n", coldest_month_date,
     // Print the hottest and coldest years with their average temperatures
     printf("Hottest Year: %d with an average temperature of %.2f\n", hottest_year, hottest_temp);
     printf("Coldest Year: %d with an average temperature of %.2f\n", coldest_year, coldest_temp);
+
+
+
+    //Question 7
+
+     char line[MAX_LINE_LENGTH];
+     int year;
+     double temperature;
+     double yearly_averages_19th_century[NUM_YEARS_PER_CENTURY] = {0};
+     double yearly_averages_20th_century[NUM_YEARS_PER_CENTURY] = {0};
+     
+     while(fgets(line, sizeof(line), in)!= NULL){
+		 sscanf(line, "%d", &year);
+		 sscanf(line, "%*[^,],%lf", &temperature);
+		 if (year >= 1801 && year <= 1900) { // 19th century
+            int index = year - 1801;
+            yearly_averages_19th_century[index] += temperature;
+        } else if (year >= 1901 && year <= 2000) { // 20th century
+            int index = year - 1901;
+            yearly_averages_20th_century[index] += temperature;
+        }
+    }
+     fprintf(out, "Year\tAverage Temperature (19th century)\tAverage Temperature (20th century)\n");
+    for (int i = 0; i < NUM_YEARS_PER_CENTURY; i++) {
+       
+		double avg_temp_19th_century = yearly_averages_19th_century[i] / 12;
+        
+        double avg_temp_20th_century = yearly_averages_20th_century[i] / 12;
+        
+        //Write data to a text file to GNU Plot for 19th and 20th Centuries 
+        fprintf(out, "%2d\t\t%.2f\t\t\t\t\t%.2f\n", i + 1, avg_temp_19th_century, avg_temp_20th_century); 
+    }
     
     return 0;
 }

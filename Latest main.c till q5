@@ -6,42 +6,44 @@
 #define NUM_MONTHS 12
 
 int main() {
-    // Your existing code for Questions 1, 2, and 3 goes here.
-// Question 1: Reading and calculating yearly averages
-                FILE *file = fopen("GlobalTemperatures.csv", "r");
-                if (file == NULL) {
-                    printf("Error opening file.\n");
-                    return 1;
-                }
 
-                double yearly_averages[NUM_YEARS] = {0};
-                int yearly_counts[NUM_YEARS] = {0};
-                fscanf(file, "%*[^\n]");
-                fgetc(file);
-
-                int year;
-                double temperature;
-                char line[100];
-                while (fgets(line, sizeof(line), file) != NULL) {
-                    sscanf(line, "%*[^,],%lf", &temperature);
-                    sscanf(line, "%d", &year);
-                    if (year >= 1760 && year <= 2015) {
-                        int index = year - 1760;
-                        yearly_averages[index] += temperature;
-                        yearly_counts[index]++;
-                    }
-                }
-
-                fclose(file);
-
-                // Output yearly averages
-                printf("Year\tAverage Temperature\n");
-                for (int i = 0; i < NUM_YEARS; i++) {
-                    if (yearly_counts[i] > 0) {
-                        double avg_temp = yearly_averages[i] / yearly_counts[i];
-                        printf("%d\t%.2f\n", i + 1760, avg_temp);
-                    }
-                }
+    // Question 1 & 6: Reading and calculating and plotting yearly averages from 1760 to 2015
+     
+    FILE *file = fopen("GlobalTemperatures.csv", "r");
+     if (file == NULL) {
+        printf("Error opening file.\n");
+        return 1;
+    }
+    
+    double yearly_averages[NUM_YEARS] = {0};
+    int yearly_counts[NUM_YEARS] = {0};
+    int year;
+    double temperature;
+    char line[100];  
+    
+    fscanf(file, "%*[^\n]");
+    fgetc(file);
+    
+    FILE *f2 = fopen("plot6.txt", "w");
+     
+    while (fgets(line, sizeof(line), file) != NULL) {
+        sscanf(line, "%*[^,],%lf", &temperature);
+        sscanf(line, "%d", &year);
+        if (year >= 1760 && year <= 2015) {
+          int index = year - 1760;
+          yearly_averages[index] += temperature;
+          yearly_counts[index]++;
+        }
+      }
+    
+      // Output yearly averages
+      fprintf(f2, "Year\tAverage Temperature\n");
+      for (int i = 0; i < NUM_YEARS; i++) {
+        if (yearly_counts[i] > 0) {
+          double avg_temp = yearly_averages[i] / yearly_counts[i];
+          fprintf(f2, "%d\t%.2f\n", i + 1760, avg_temp);
+        }
+      }
 
     // Question 2: Calculating average land temperature
             file = fopen("GlobalTemperatures.csv", "r");
@@ -65,8 +67,6 @@ int main() {
             } else {
                 printf("No data found.\n");
             }
-
-            fclose(file);
 
     //Question 3: Average temperature of each month for all the months combined between 1990 2015
                 double monthly_averages[NUM_MONTHS] = {0};
@@ -93,8 +93,6 @@ int main() {
                     }
                 }
 
-                fclose(file);
-
                 // Calculating the montly temperatures
                 printf("Month\tAverage Temperature\n");
                 for (int i = 0; i < NUM_MONTHS; i++) {
@@ -111,12 +109,6 @@ char hottest_month_date[10] = "", coldest_month_date[10] = "";
 char temp_date[10];
 double month_temperature;
 
-file = fopen("GlobalTemperatures.csv", "r");
-if (file == NULL) {
-    printf("Error opening file.\n");
-    return 1;
-}
-
 fgets(line, sizeof(line), file); // Skip header
 while (fgets(line, sizeof(line), file) != NULL) {
     sscanf(line, "%[^,],%lf", temp_date, &month_temperature);
@@ -130,13 +122,9 @@ while (fgets(line, sizeof(line), file) != NULL) {
     }
 }
 
-fclose(file);
-
 // Print the results for Question 4
 printf("Hottest month recorded: %s with temperature %.2f\n", hottest_month_date, hottest_month_temp);
 printf("Coldest month recorded: %s with temperature %.2f\n", coldest_month_date, coldest_month_temp);
-
-// Continue with Question 5...
 
     //Question 5
             
@@ -165,25 +153,7 @@ printf("Coldest month recorded: %s with temperature %.2f\n", coldest_month_date,
     printf("Coldest Year: %d with an average temperature of %.2f\n", coldest_year, coldest_temp);
 
 //Question 6
-
-#include <limits.h> // For INT_MIN and INT_MAX
-#include <stdio.h>
-#include <stdlib.h>
-
-#define NUM_YEARS 256
-#define NUM_MONTHS 12
-
-int main() {
-  // Your existing code for Questions 1, 2, and 3 goes here.
-  // Question 1: Reading and calculating yearly averages
-  FILE *file = fopen("GlobalTemperatures.csv", "r");
-  if (file == NULL) {
-    printf("Error opening file.\n");
-    return 1;
-  }
   FILE *f2 = fopen("plot6.txt", "w");
-  double yearly_averages[NUM_YEARS] = {0};
-  int yearly_counts[NUM_YEARS] = {0};
   fscanf(file, "%*[^\n]");
   fgetc(file);
 
